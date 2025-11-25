@@ -1,10 +1,27 @@
 const wordsData = [];
 const flipCards = [];
 
+function appendFlipCards() {
+    const container = document.querySelector('.container');
+    let usedIndexes = [];
+
+    for (let i = 0; i < flipCards.length; i++) {
+        const index = generateRandomIndex(usedIndexes);
+        container.appendChild(flipCards[index]);
+    }
+}
+
+function generateRandomIndex(usedIndexes) {
+    let randomIndex;
+    do {
+        randomIndex = Math.floor(Math.random() * flipCards.length);
+    } while (usedIndexes.includes(randomIndex));
+    usedIndexes.push(randomIndex);
+    return randomIndex;
+}
+
 async function createFlipCards() {
     await createWordsData();
-
-    const container = document.querySelector('.container');
 
     for (let i = 0; i < wordsData.length; i++) {
         for (let j = 0; j < Object.keys(wordsData[0]).length; j++) {
@@ -33,7 +50,7 @@ async function createFlipCards() {
                 flipCard.classList.add('flip-card-clicked');
             });
 
-            container.appendChild(flipCard);
+            flipCards.push(flipCard);
         }
     }
 }
@@ -81,4 +98,7 @@ async function fetchWordData() {
     }
 }
 
-createFlipCards();
+(async () => {
+    await createFlipCards();
+    appendFlipCards();
+})();
