@@ -1,9 +1,17 @@
-// store pairs in object
+const wordsData = [];
 
 const flipCard = document.querySelector('.flip-card');
 flipCard.addEventListener('click', () => {
     flipCard.classList.add('flip-card-clicked');
 });
+
+async function createWordsData() {
+    for (let i = 0; i < 8; i++) {
+        wordsData.push(await fetchWordData());
+    }
+
+    console.log(wordsData);
+}
 
 async function fetchRandomWord() {
     try {
@@ -16,11 +24,14 @@ async function fetchRandomWord() {
     }
 }
 
-async function fetchDefinition() {
+async function fetchWordData() {
     try {
         let definition = '';
+        let word;
+
         while (definition == '') {
-            const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${await fetchRandomWord()}`);
+            word = await fetchRandomWord();
+            const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
             const data = await response.json();
             if (data.title != 'No Definitions Found') {
                 definition = data[0].meanings[0].definitions[0].definition;
@@ -28,7 +39,10 @@ async function fetchDefinition() {
         }
         
         console.log(definition);
-        return definition;
+        return {
+            word: word,
+            definition: definition
+        };
     } catch(error) {
         console.error("Error in fetchDefinition():", error);
     }
