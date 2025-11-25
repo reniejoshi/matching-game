@@ -1,9 +1,42 @@
 const wordsData = [];
+const flipCards = [];
 
-const flipCard = document.querySelector('.flip-card');
-flipCard.addEventListener('click', () => {
-    flipCard.classList.add('flip-card-clicked');
-});
+async function createFlipCards() {
+    await createWordsData();
+
+    const container = document.querySelector('.container');
+
+    for (let i = 0; i < wordsData.length; i++) {
+        for (let j = 0; j < Object.keys(wordsData[0]).length; j++) {
+            const flipCard = document.createElement('div');
+            flipCard.className = 'flip-card';
+
+            const flipCardContent = document.createElement('div');
+            flipCardContent.className = 'flip-card-content';
+            flipCard.appendChild(flipCardContent);
+
+            const flipCardFront = document.createElement('div');
+            flipCardFront.className = 'flip-card-front';
+            const flipCardFrontP = document.createElement('p');
+            flipCardFront.appendChild(flipCardFrontP);
+            flipCardContent.appendChild(flipCardFront);
+
+            const flipCardBack = document.createElement('div');
+            flipCardBack.className = 'flip-card-back';
+            const flipCardBackP = document.createElement('p');
+            const wordDataArray = Object.values(wordsData[i]);
+            flipCardBackP.textContent = wordDataArray[j];
+            flipCardBack.appendChild(flipCardBackP);
+            flipCardContent.appendChild(flipCardBack);
+
+            flipCard.addEventListener('click', () => {
+                flipCard.classList.add('flip-card-clicked');
+            });
+
+            container.appendChild(flipCard);
+        }
+    }
+}
 
 async function createWordsData() {
     for (let i = 0; i < 8; i++) {
@@ -47,3 +80,5 @@ async function fetchWordData() {
         console.error("Error in fetchDefinition():", error);
     }
 }
+
+createFlipCards();
